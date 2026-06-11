@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Создать заметку{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>✏️ Создать заметку</h1>
+        <p class="subtitle">Поделитесь своими мыслями</p>
+    </div>
+    <a href="/dashboard" class="btn btn-outline">← Назад</a>
+</div>
+
+<div class="form-card form-card-wide">
+    <form method="POST">
+        <div class="form-group">
+            <label for="title">Заголовок</label>
+            <input type="text" id="title" name="title" class="form-control" placeholder="Придумайте заголовок" required>
+        </div>
+        <div class="form-group">
+            <label for="content">Содержание</label>
+            <textarea id="content" name="content" class="form-control" placeholder="Напишите здесь всё, что хотите..." rows="12" required></textarea>
+            <div class="form-help">Поддерживается HTML-разметка</div>
+        </div>
+        <div class="form-group">
+            <label for="is_public">Видимость</label>
+            <select id="is_public" name="is_public" class="form-control">
+                <option value="1">🌍 Публичная — увидят все</option>
+                <option value="0">🔒 Приватная — только я</option>
+            </select>
+        </div>
+        <div class="form-actions">
+            <a href="/dashboard" class="btn btn-outline">Отмена</a>
+            <button type="submit" class="btn btn-primary">💾 Сохранить</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

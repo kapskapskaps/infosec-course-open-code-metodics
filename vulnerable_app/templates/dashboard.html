@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Мои заметки{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>📋 Мои заметки</h1>
+        <p class="subtitle">Управляйте своими заметками</p>
+    </div>
+    <div class="flex gap-2">
+        <a href="/create" class="btn btn-primary">➕ Создать</a>
+    </div>
+</div>
+
+<!-- Статистика -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">📝</div>
+        <div class="stat-label">Всего заметок</div>
+        <div class="stat-value">{{ notes | length }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">🌍</div>
+        <div class="stat-label">Публичных</div>
+        <div class="stat-value">{{ notes | selectattr("is_public") | list | length }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">🔒</div>
+        <div class="stat-label">Приватных</div>
+        <div class="stat-value">{{ notes | rejectattr("is_public") | list | length }}</div>
+    </div>
+</div>
+
+<!-- Смена пароля -->
+<div class="card" style="margin-bottom:24px;">
+    <div class="card-header">
+        <h3>🔑 Смена пароля</h3>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="/change_password" style="display:flex;gap:12px;max-width:400px;">
+            <input type="password" name="new_password" class="form-control" placeholder="Новый пароль" required>
+            <button type="submit" class="btn btn-primary">Сменить</button>
+        </form>
+    </div>
+</div>
+
+<!-- Список заметок -->
+{% if notes %}
+    <div class="notes-grid">
+        {% for note in notes %}
+        <div class="note-card">
+            <div class="note-title"><a href="/note/{{ note.id }}">{{ note.title }}</a></div>
+            <div class="note-content">{{ note.content | safe }}</div>
+            <div class="note-meta">
+                <span class="badge {% if note.is_public %}badge-public{% else %}badge-private{% endif %}">
+                    {% if note.is_public %}🌍 Публичная{% else %}🔒 Приватная{% endif %}
+                </span>
+                <form method="POST" action="/note/{{ note.id }}/delete" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Удалить эту заметку?')">🗑 Удалить</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <div class="empty-icon">📝</div>
+        <h3>У вас пока нет заметок</h3>
+        <p>Создайте свою первую заметку прямо сейчас!</p>
+        <a href="/create" class="btn btn-primary">Создать заметку</a>
+    </div>
+{% endif %}
+
+{% endblock %}

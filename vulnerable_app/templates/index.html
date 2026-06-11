@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Главная{% endblock %}
+{% block content %}
+
+{% if not session.user_id %}
+<div class="alert alert-info" style="max-width:720px;margin:0 auto 24px;text-align:center;">
+    🔐 Добро пожаловать на <strong>NoteShare</strong>! 
+    <a href="/register">Зарегистрируйтесь</a> или <a href="/login">войдите</a>,
+    чтобы создавать и делиться заметками.
+</div>
+{% endif %}
+
+<div class="page-header">
+    <div>
+        <h1>📢 Публичные заметки</h1>
+        <p class="subtitle">Все заметки, которыми поделились пользователи</p>
+    </div>
+    {% if session.user_id %}
+        <a href="/create" class="btn btn-primary">➕ Создать заметку</a>
+    {% endif %}
+</div>
+
+{% if notes %}
+    <div class="notes-grid">
+        {% for note in notes %}
+        <div class="note-card">
+            <div class="note-title"><a href="/note/{{ note.id }}">{{ note.title }}</a></div>
+            <div class="note-content">{{ note.content | safe }}</div>
+            <div class="note-meta">
+                <span>
+                    👤 <a href="/profile/{{ note.user_id }}">Пользователь #{{ note.user_id }}</a>
+                </span>
+                <span class="badge badge-public">Публичная</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <div class="empty-icon">📝</div>
+        <h3>Пока нет заметок</h3>
+        <p>Будьте первым — создайте интересную заметку!</p>
+        <a href="/register" class="btn btn-primary">Начать</a>
+    </div>
+{% endif %}
+
+{% endblock %}

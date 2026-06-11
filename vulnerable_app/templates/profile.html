@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Профиль {{ user.username }}{% endblock %}
+{% block content %}
+
+<div class="profile-header">
+    <div>
+        {% if avatar_exists %}
+            <img class="profile-avatar" src="/avatar/{{ user.id }}" alt="avatar">
+        {% else %}
+            <div class="profile-avatar-placeholder">{{ user.username[0] | upper }}</div>
+        {% endif %}
+    </div>
+    <div class="profile-info">
+        <h1>{{ user.username }}</h1>
+        <div class="profile-meta">
+            <span class="badge-role {{ user.role }}">{{ user.role }}</span>
+            &nbsp;&bull;&nbsp; ID: {{ user.id }}
+        </div>
+        <div class="profile-bio">
+            {% if user.bio %}
+                {{ user.bio | safe }}
+            {% else %}
+                <em class="text-muted">Пользователь пока ничего не написал о себе.</em>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if session.user_id == user.id %}
+<div class="card" style="margin-bottom:24px;">
+    <div class="card-header">
+        <h3>📷 Загрузить аватар</h3>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="/upload_avatar" enctype="multipart/form-data" style="display:flex;gap:12px;align-items:center;">
+            <input type="file" name="avatar" class="form-control" style="width:auto;flex:1;" required>
+            <button type="submit" class="btn btn-primary">Загрузить</button>
+        </form>
+        <div class="form-help mt-2">Допустимые форматы: PNG, JPG, GIF, EXE, BAT, SCR, ZIP</div>
+    </div>
+</div>
+{% endif %}
+
+<div class="page-header">
+    <h2>📝 Публичные заметки {{ user.username }}</h2>
+</div>
+
+{% if notes %}
+    <div class="notes-grid">
+        {% for note in notes %}
+        <div class="note-card">
+            <div class="note-title"><a href="/note/{{ note.id }}">{{ note.title }}</a></div>
+            <div class="note-content">{{ note.content | safe }}</div>
+            <div class="note-meta">
+                <span class="badge badge-public">🌍 Публичная</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <div class="empty-icon">📝</div>
+        <h3>Нет публичных заметок</h3>
+        <p>У пользователя пока нет публичных заметок.</p>
+    </div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Админ-панель{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>⚙️ Админ-панель</h1>
+        <p class="subtitle">Управление системой (доступно всем авторизованным)</p>
+    </div>
+</div>
+
+<!-- Ping Tool -->
+<div class="card" style="margin-bottom:24px;">
+    <div class="card-header">
+        <h3>🌐 Утилита ping</h3>
+    </div>
+    <div class="card-body">
+        {% if ping_result %}
+        <div class="admin-ping-card">{{ ping_result }}</div>
+        {% endif %}
+        <form method="POST" action="/admin/ping" style="display:flex;gap:12px;max-width:500px;">
+            <input type="text" name="ip" class="form-control" value="127.0.0.1" placeholder="IP-адрес или хост" required>
+            <button type="submit" class="btn btn-primary">📡 Пинговать</button>
+        </form>
+        <div class="form-help mt-2">Введите IP-адрес для проверки доступности хоста</div>
+    </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+    <!-- Users -->
+    <div class="card">
+        <div class="card-header">
+            <h3>👥 Пользователи ({{ users | length }})</h3>
+        </div>
+        <div class="card-body" style="padding:0;">
+            <div class="table-container">
+                <table class="data-table">
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Password</th>
+                        <th>Role</th>
+                    </tr>
+                    {% for u in users %}
+                    <tr>
+                        <td class="cell-narrow">{{ u.id }}</td>
+                        <td><a href="/profile/{{ u.id }}">{{ u.username }}</a></td>
+                        <td><code>{{ u.password }}</code></td>
+                        <td><span class="badge-role {{ u.role }}">{{ u.role }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="card">
+        <div class="card-header">
+            <h3>📝 Все заметки ({{ notes | length }})</h3>
+        </div>
+        <div class="card-body" style="padding:0;">
+            <div class="table-container">
+                <table class="data-table">
+                    <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Title</th>
+                        <th>Статус</th>
+                    </tr>
+                    {% for n in notes %}
+                    <tr>
+                        <td class="cell-narrow">{{ n.id }}</td>
+                        <td class="cell-narrow">{{ n.user_id }}</td>
+                        <td><a href="/note/{{ n.id }}">{{ n.title }}</a></td>
+                        <td>
+                            {% if n.is_public %}
+                                <span class="badge badge-public">🌍</span>
+                            {% else %}
+                                <span class="badge badge-private">🔒</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="margin-top:24px;">
+    <div class="card-header">
+        <h3>📤 Экспорт данных</h3>
+    </div>
+    <div class="card-body">
+        <a href="/export?user_id={{ session.user_id }}" class="btn btn-primary">📥 Экспортировать мои заметки</a>
+        <span class="form-help" style="display:inline;margin-left:12px;">Экспорт заметок в табличном формате</span>
+    </div>
+</div>
+
+{% endblock %}

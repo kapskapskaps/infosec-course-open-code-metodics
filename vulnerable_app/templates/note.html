@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}{{ note.title }}{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>📄 {{ note.title }}</h1>
+    </div>
+    <div class="flex gap-2">
+        {% if session.user_id == note.user_id %}
+        <form method="POST" action="/note/{{ note.id }}/delete" style="display:inline;">
+            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Удалить эту заметку?')">🗑 Удалить</button>
+        </form>
+        {% endif %}
+        <a href="javascript:history.back()" class="btn btn-outline btn-sm">← Назад</a>
+    </div>
+</div>
+
+<div class="note-full">
+    <div class="note-full-meta">
+        👤 <a href="/profile/{{ note.user_id }}">Пользователь #{{ note.user_id }}</a>
+        &nbsp;&bull;&nbsp;
+        {% if note.is_public %}
+            <span class="badge badge-public">🌍 Публичная</span>
+        {% else %}
+            <span class="badge badge-private">🔒 Приватная</span>
+        {% endif %}
+    </div>
+    <div class="note-full-content">
+        {{ note.content | safe }}
+    </div>
+</div>
+
+<!-- Комментарии -->
+<div class="card">
+    <div class="card-header">
+        <h3>💬 Комментарии ({{ comments | length }})</h3>
+    </div>
+    <div class="card-body">
+        {% if comments %}
+            {% for c in comments %}
+            <div class="comment">
+                <div class="comment-author">👤 {{ c.author }}</div>
+                <div class="comment-text">{{ c.text | safe }}</div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state" style="padding:24px;">
+                <p>Комментариев пока нет. Будьте первым!</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="form-card form-card-wide" style="margin-top:16px;">
+    <h3 style="margin-bottom:16px;">✏️ Добавить комментарий</h3>
+    <form method="POST" action="/note/{{ note.id }}/comment">
+        <div class="form-group">
+            <label for="author">Ваше имя</label>
+            <input type="text" id="author" name="author" class="form-control" value="{{ session.username or 'Аноним' }}">
+        </div>
+        <div class="form-group">
+            <label for="text">Текст комментария</label>
+            <textarea id="text" name="text" class="form-control" rows="3" required placeholder="Напишите комментарий..."></textarea>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">💬 Отправить</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

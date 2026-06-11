@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Поиск{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>🔍 Поиск заметок</h1>
+        <p class="subtitle">Найдите публичные заметки по ключевым словам</p>
+    </div>
+</div>
+
+<div class="search-form">
+    <form method="GET" action="/search" style="display:flex;gap:8px;width:100%;">
+        <input type="text" name="q" class="form-control" value="{{ query }}" placeholder="Введите поисковый запрос..." style="flex:1;">
+        <button type="submit" class="btn btn-primary">🔍 Найти</button>
+    </form>
+</div>
+
+{% if query %}
+    <div class="alert alert-info">
+        Результаты поиска по запросу: <strong>"{{ query }}"</strong>
+        &mdash; найдено: <strong>{{ results | length }}</strong>
+    </div>
+
+    {% if results %}
+        <div class="notes-grid">
+            {% for note in results %}
+            <div class="note-card">
+                <div class="note-title"><a href="/note/{{ note.id }}">{{ note.title }}</a></div>
+                <div class="note-content">{{ note.content | safe }}</div>
+                <div class="note-meta">
+                    <span>👤 <a href="/profile/{{ note.user_id }}">Пользователь #{{ note.user_id }}</a></span>
+                    <span class="badge badge-public">🌍 Публичная</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <h3>Ничего не найдено</h3>
+            <p>По запросу <strong>"{{ query }}"</strong> ничего не найдено. Попробуйте другие ключевые слова.</p>
+        </div>
+    {% endif %}
+{% else %}
+    <div class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <h3>Что ищем?</h3>
+        <p>Введите поисковый запрос выше, чтобы найти заметки.</p>
+    </div>
+{% endif %}
+
+{% endblock %}

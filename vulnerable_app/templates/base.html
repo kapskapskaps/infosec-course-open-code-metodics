@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Школьный портал{% endblock %} • NoteShare</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- ─── Навигация ────────────────────────────────── -->
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a href="/" class="navbar-brand">
+            <span class="brand-icon">📘</span>
+            <span class="brand-highlight">Note</span>Share
+        </a>
+
+        <div class="navbar-links">
+            <a href="/" class="{% if request.path == '/' %}active{% endif %}">
+                🏠 <span>Главная</span>
+            </a>
+            <a href="/search">🔍 <span>Поиск</span></a>
+            {% if session.user_id %}
+                <a href="/dashboard" class="{% if request.path == '/dashboard' %}active{% endif %}">
+                    📋 <span>Мои заметки</span>
+                </a>
+                <a href="/create">➕ <span>Создать</span></a>
+                {% if session.role == 'admin' %}
+                    <a href="/admin" class="{% if request.path == '/admin' %}active{% endif %}">
+                        ⚙️ <span>Админка</span>
+                    </a>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <div class="navbar-user">
+            {% if session.user_id %}
+                <img class="avatar-small" src="/avatar/{{ session.user_id }}" alt=""
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="avatar-placeholder" style="display:none">
+                    {{ session.username[0] | upper }}
+                </div>
+                <span class="username-display">{{ session.username }}</span>
+                <span class="badge-role {{ session.role }}">{{ session.role }}</span>
+                <a href="/logout" class="btn btn-outline btn-sm">Выйти</a>
+            {% else %}
+                <a href="/login" class="btn btn-primary btn-sm">Войти</a>
+                <a href="/register" class="btn btn-outline btn-sm">Регистрация</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<!-- ─── Flash messages ───────────────────────────── -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div style="max-width:1200px;margin:16px auto 0;padding:0 24px;">
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<!-- ─── Content ──────────────────────────────────── -->
+<main class="main-wrapper">
+    {% block content %}{% endblock %}
+</main>
+
+<!-- ─── Footer ───────────────────────────────────── -->
+<footer class="footer">
+    <p>
+        <strong>NoteShare</strong> &mdash; Школьный портал заметок v1.0 &bull;
+        <a href="/echo?name=Guest">Эхо</a> &bull;
+        <a href="/set_theme?theme=dark">Тёмная тема</a> &bull;
+        Создано для урока информационной безопасности
+    </p>
+</footer>
+
+</body>
+</html>

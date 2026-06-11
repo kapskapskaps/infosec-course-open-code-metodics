@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Вход{% endblock %}
+{% block content %}
+
+<div class="auth-page">
+    <div class="auth-card">
+        <h1>🔐 Вход</h1>
+        <p class="auth-subtitle">Войдите в свою учётную запись</p>
+
+        {% if msg %}
+        <div class="alert alert-danger">{{ msg }}</div>
+        {% endif %}
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="username">Имя пользователя</label>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Введите логин" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Войти</button>
+        </form>
+
+        <div class="form-footer">
+            Нет аккаунта? <a href="/register">Зарегистрироваться</a><br>
+            <span class="text-muted text-sm">Тестовый вход: <strong>student</strong> / <strong>student123</strong></span>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

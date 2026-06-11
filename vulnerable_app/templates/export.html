@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Экспорт данных{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>📤 Экспорт заметок</h1>
+        <p class="subtitle">Данные в табличном формате</p>
+    </div>
+    <a href="/admin" class="btn btn-outline">← Назад</a>
+</div>
+
+<div class="card">
+    <div class="card-body" style="padding:0;">
+        <div class="table-container">
+            <table class="data-table">
+                <tr>
+                    <th>ID</th>
+                    <th>Заголовок</th>
+                    <th>Содержание</th>
+                    <th>Статус</th>
+                </tr>
+                {% for row in data %}
+                <tr>
+                    <td class="cell-narrow">{{ row.id }}</td>
+                    <td>{{ row.title }}</td>
+                    <td>{{ row.content }}</td>
+                    <td>
+                        {% if row.is_public %}
+                            <span class="badge badge-public">🌍 Публичная</span>
+                        {% else %}
+                            <span class="badge badge-private">🔒 Приватная</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" style="text-align:center;padding:24px;color:var(--gray-400);">
+                        Нет данных для экспорта
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
